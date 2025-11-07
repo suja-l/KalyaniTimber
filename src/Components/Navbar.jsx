@@ -1,7 +1,5 @@
 import React, { useState } from "react";
-// Assuming you will put your logo image in the public folder or import it.
-// For now, we'll use a placeholder.
-// import Logo from '../assets/kalyani-logo.svg';
+import ktm_logo from "../assets/ktmlogo.png"; // For now, we'll use a placeholder.
 
 const NavLink = ({ href, children }) => (
   <a
@@ -25,19 +23,18 @@ export default function Navbar() {
     { name: "Products", href: "#products" },
     { name: "Services", href: "#services" },
     { name: "Contact Us", href: "#contact" },
+    { name: "Admin", href: "/AdminPage" },
   ];
 
   return (
     // Outer container: Fixed width, sticky top, light background, shadow for lift
     <nav className="sticky top-0 z-50 bg-white shadow-md h-16 ">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-20">
+        <div className="flex justify-between items-center h-16">
           {/* === 1. Logo and Brand Name === */}
-          <div className="flex-shrink-0 flex items-center">
+          <div className="flex-shrink-0 flex items-center h-16">
             {/* The Logo from your image (using a K placeholder for now) */}
-            <span className="text-3xl font-extrabold text-amber-900 border-2 border-amber-900 p-1">
-              K
-            </span>
+            <img className="w-14" src={ktm_logo} alt="Error Loading" />
             <div className="ml-3">
               <p className="text-lg font-bold text-gray-800 tracking-tight">
                 KALYANI TIMBER MART
