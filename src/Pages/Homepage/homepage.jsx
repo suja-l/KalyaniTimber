@@ -2,7 +2,6 @@ import React from "react";
 import timberimg from "../../assets/KTM.png";
 import { Button } from "../../Components/Button";
 import FeatureIconCard from "../../Components/FeatureIconCard";
-import Link from 'next/link';
 export default function homepage() {
   const productCategories = [
     { title: "Timber", icon: "HardHat" }, // Representing construction/wood

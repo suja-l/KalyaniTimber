@@ -1,20 +1,24 @@
-// src/App.jsx
-
-// 1. We import the main page component we're about to create.
-// Assuming you'll create a 'pages' folder for organization.
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Navbar from "./Components/Navbar";
 import Homepage from "./Pages/Homepage/homepage";
+import AdminPage from "./Pages/Adminpage/AdminPage.jsx";
+import AdminProduct from "./Pages/Adminpage/AdminProduct.jsx";
 
-// 2. Import the main CSS file. Tailwind will use this.
 import "./index.css";
 
 function App() {
-  // We can wrap the Homepage in any overall layout components (like a Navbar or Footer) later.
   return (
-    <div className="">
-      <Navbar />
-      <Homepage />
-    </div>
+    <Router>
+      <div className="">
+        <Navbar />
+        <Routes>
+          <Route path="/" element={<Homepage />} />
+          <Route path="/admin" element={<AdminPage />} />
+          <Route path="/admin/products" element={<AdminProduct />} />
+          
+        </Routes>
+      </div>
+    </Router>
   );
 }
 
