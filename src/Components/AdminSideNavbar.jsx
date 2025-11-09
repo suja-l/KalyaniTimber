@@ -32,6 +32,7 @@ const AdminSidebar = () => {
   const location = useLocation();
 
   const closeSidebar = () => setSidebarOpen(false);
+  const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
 
   // Close sidebar on escape key
   useEffect(() => {
@@ -58,23 +59,22 @@ const AdminSidebar = () => {
 
   return (
     <>
-      {/* Mobile Top Bar */}
-      <div className="lg:hidden fixed top-0 left-0 right-0 flex items-center justify-between bg-amber-900 text-white p-4 z-30">
-        <h2 className="text-lg font-semibold">Timber Admin</h2>
-        <button 
+      {/* Floating Hamburger Button - Only visible on mobile when sidebar is closed */}
+      {!sidebarOpen && (
+        <button
           onClick={() => setSidebarOpen(true)}
+          className="lg:hidden fixed left-4 top-20 z-40 bg-amber-900 text-white p-3 rounded-full shadow-lg hover:bg-amber-800 transition-all hover:scale-110"
           aria-label="Open navigation menu"
-          aria-expanded={sidebarOpen}
         >
           <Menu size={24} />
         </button>
-      </div>
+      )}
 
       {/* Overlay (mobile only) */}
       {sidebarOpen && (
         <div
           onClick={closeSidebar}
-          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+          className="fixed inset-0 bg-black/50 z-30 lg:hidden"
         />
       )}
 
@@ -82,18 +82,11 @@ const AdminSidebar = () => {
       <aside
         className={`fixed lg:static inset-y-0 left-0 z-50 bg-amber-900 text-white transform ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
-        } lg:translate-x-0 w-64 transition-transform duration-300 flex flex-col`}
+        } lg:translate-x-0 w-64 transition-transform duration-300 flex flex-col shadow-2xl lg:shadow-none mt-16 lg:mt-0`}
       >
-        {/* Header */}
-        <div className="p-6 flex items-center justify-between border-b border-amber-800">
+        {/* Header - Only visible on desktop */}
+        <div className="hidden lg:flex p-6 items-center justify-between border-b border-amber-800">
           <h2 className="text-xl font-bold">Timber Admin</h2>
-          <button
-            onClick={() => setSidebarOpen(false)}
-            className="lg:hidden hover:bg-amber-800 p-2 rounded"
-            aria-label="Close navigation menu"
-          >
-            <X size={20} />
-          </button>
         </div>
 
         {/* Navigation */}

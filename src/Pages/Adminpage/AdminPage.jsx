@@ -98,8 +98,8 @@ const AdminHomepage = () => {
       {/* Main Content */}
       <div className="flex-1 overflow-auto">
         {/* Header */}
-        <header className="bg-white shadow-md sticky top-0 z-10 lg:top-0">
-          <div className="px-6 py-4 mt-16 lg:mt-0">
+        <header className="bg-white shadow-md sticky top-0 z-10">
+          <div className="px-6 py-4">
             <div className="flex items-center justify-between">
               <div>
                 <h1 className="text-2xl font-bold text-amber-900">Dashboard Overview</h1>
