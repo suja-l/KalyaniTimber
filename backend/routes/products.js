@@ -1,12 +1,12 @@
-// backend/routes/products.js
+// backend/routes/products.js (FIXED PATH)
 
 const router = require("express").Router();
-let Product = require("../models/product.model"); // This imports your product.model.js
+const path = require("path"); // <-- NEW IMPORT to fix pathing issues
+let Product = require(path.join(__dirname, "..", "models", "product.model")); // <-- FIXED PATH LOGIC
 
 // GET all products: GET /products/
-// This handles the request you just tried in your browser
+// This route will now attempt to return the products array
 router.route("/").get((req, res) => {
-  // Mongoose finds all documents in the 'products' collection
   Product.find()
     .then((products) => res.json(products))
     .catch((err) => res.status(400).json("Error: " + err));

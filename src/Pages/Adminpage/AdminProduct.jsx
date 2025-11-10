@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { Trash2, Edit2, Save, X, Plus, Upload } from 'lucide-react';
-import AdminSidebar from '../../Components/AdminSideNavbar.jsx';
+import React, { useState, useEffect } from "react";
+import { Trash2, Edit2, Save, X, Plus, Upload } from "lucide-react";
+import AdminSidebar from "../../Components/AdminSideNavbar.jsx";
 
 const ProductPage = () => {
   const [products, setProducts] = useState([]);
@@ -8,16 +8,16 @@ const ProductPage = () => {
   const [editForm, setEditForm] = useState({});
   const [showAddForm, setShowAddForm] = useState(false);
   const [newProduct, setNewProduct] = useState({
-    name: '',
-    type: '',
-    dimensions: '',
+    name: "",
+    type: "",
+    dimensions: "",
     stock: 0,
     price: 0,
-    image: ''
+    image: "",
   });
 
   // Replace this URL with your actual backend endpoint
-  const API_BASE_URL = 'http://localhost:3000/api/products';
+  const API_BASE_URL = "http://localhost:3000/api/products";
 
   // Fetch products from backend
   useEffect(() => {
@@ -30,27 +30,29 @@ const ProductPage = () => {
       const data = await response.json();
       setProducts(data);
     } catch (error) {
-      console.error('Error fetching products:', error);
+      console.error("Error fetching products:", error);
       // Fallback to sample data if backend is not available
       setProducts([
         {
           id: 1,
-          name: 'Oak Timber',
-          type: 'Hardwood',
-          dimensions: '2x4x8',
+          name: "Oak Timber",
+          type: "Hardwood",
+          dimensions: "2x4x8",
           stock: 150,
           price: 45.99,
-          image: 'https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?w=400'
+          image:
+            "https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?w=400",
         },
         {
           id: 2,
-          name: 'Pine Timber',
-          type: 'Softwood',
-          dimensions: '2x6x10',
+          name: "Pine Timber",
+          type: "Softwood",
+          dimensions: "2x6x10",
           stock: 200,
-          price: 32.50,
-          image: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?w=400'
-        }
+          price: 32.5,
+          image:
+            "https://images.unsplash.com/photo-1513694203232-719a280e022f?w=400",
+        },
       ]);
     }
   };
@@ -59,23 +61,25 @@ const ProductPage = () => {
   const handleUpdate = async (id) => {
     try {
       const response = await fetch(`${API_BASE_URL}/${id}`, {
-        method: 'PUT',
+        method: "PUT",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(editForm),
       });
-      
+
       if (response.ok) {
         const updatedProduct = await response.json();
-        setProducts(products.map(p => p.id === id ? updatedProduct : p));
+        setProducts(products.map((p) => (p.id === id ? updatedProduct : p)));
         setEditingId(null);
         setEditForm({});
       }
     } catch (error) {
-      console.error('Error updating product:', error);
+      console.error("Error updating product:", error);
       // Fallback: update locally if backend fails
-      setProducts(products.map(p => p.id === id ? { ...p, ...editForm } : p));
+      setProducts(
+        products.map((p) => (p.id === id ? { ...p, ...editForm } : p))
+      );
       setEditingId(null);
       setEditForm({});
     }
@@ -83,20 +87,21 @@ const ProductPage = () => {
 
   // Delete product
   const handleDelete = async (id) => {
-    if (!window.confirm('Are you sure you want to delete this product?')) return;
-    
+    if (!window.confirm("Are you sure you want to delete this product?"))
+      return;
+
     try {
       const response = await fetch(`${API_BASE_URL}/${id}`, {
-        method: 'DELETE',
+        method: "DELETE",
       });
-      
+
       if (response.ok) {
-        setProducts(products.filter(p => p.id !== id));
+        setProducts(products.filter((p) => p.id !== id));
       }
     } catch (error) {
-      console.error('Error deleting product:', error);
+      console.error("Error deleting product:", error);
       // Fallback: delete locally if backend fails
-      setProducts(products.filter(p => p.id !== id));
+      setProducts(products.filter((p) => p.id !== id));
     }
   };
 
@@ -104,26 +109,40 @@ const ProductPage = () => {
   const handleAdd = async () => {
     try {
       const response = await fetch(API_BASE_URL, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(newProduct),
       });
-      
+
       if (response.ok) {
         const addedProduct = await response.json();
         setProducts([...products, addedProduct]);
         setShowAddForm(false);
-        setNewProduct({ name: '', type: '', dimensions: '', stock: 0, price: 0, image: '' });
+        setNewProduct({
+          name: "",
+          type: "",
+          dimensions: "",
+          stock: 0,
+          price: 0,
+          image: "",
+        });
       }
     } catch (error) {
-      console.error('Error adding product:', error);
+      console.error("Error adding product:", error);
       // Fallback: add locally if backend fails
       const tempProduct = { ...newProduct, id: Date.now() };
       setProducts([...products, tempProduct]);
       setShowAddForm(false);
-      setNewProduct({ name: '', type: '', dimensions: '', stock: 0, price: 0, image: '' });
+      setNewProduct({
+        name: "",
+        type: "",
+        dimensions: "",
+        stock: 0,
+        price: 0,
+        image: "",
+      });
     }
   };
 
@@ -150,7 +169,7 @@ const ProductPage = () => {
   };
 
   return (
-    <div className="flex min-h-screen bg-gradient-to-br from-amber-50 to-orange-100">
+    <div className="flex min-h-screen lg:ml-64 bg-gradient-to-br from-amber-50 to-orange-100">
       {/* Sidebar Component */}
       <AdminSidebar />
 
@@ -161,8 +180,12 @@ const ProductPage = () => {
           <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
             <div className="flex justify-between items-center">
               <div>
-                <h1 className="text-3xl font-bold text-amber-900">Timber Product Management</h1>
-                <p className="text-gray-600 mt-2">Manage your timber inventory and stock levels</p>
+                <h1 className="text-3xl font-bold text-amber-900">
+                  Timber Product Management
+                </h1>
+                <p className="text-gray-600 mt-2">
+                  Manage your timber inventory and stock levels
+                </p>
               </div>
               <button
                 onClick={() => setShowAddForm(!showAddForm)}
@@ -177,34 +200,47 @@ const ProductPage = () => {
           {/* Add Product Form */}
           {showAddForm && (
             <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
-              <h2 className="text-xl font-bold text-amber-900 mb-4">Add New Product</h2>
+              <h2 className="text-xl font-bold text-amber-900 mb-4">
+                Add New Product
+              </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <input
                   type="text"
                   placeholder="Product Name"
                   value={newProduct.name}
-                  onChange={(e) => setNewProduct({ ...newProduct, name: e.target.value })}
+                  onChange={(e) =>
+                    setNewProduct({ ...newProduct, name: e.target.value })
+                  }
                   className="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-amber-500"
                 />
                 <input
                   type="text"
                   placeholder="Type (e.g., Hardwood)"
                   value={newProduct.type}
-                  onChange={(e) => setNewProduct({ ...newProduct, type: e.target.value })}
+                  onChange={(e) =>
+                    setNewProduct({ ...newProduct, type: e.target.value })
+                  }
                   className="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-amber-500"
                 />
                 <input
                   type="text"
                   placeholder="Dimensions (e.g., 2x4x8)"
                   value={newProduct.dimensions}
-                  onChange={(e) => setNewProduct({ ...newProduct, dimensions: e.target.value })}
+                  onChange={(e) =>
+                    setNewProduct({ ...newProduct, dimensions: e.target.value })
+                  }
                   className="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-amber-500"
                 />
                 <input
                   type="number"
                   placeholder="Stock"
                   value={newProduct.stock}
-                  onChange={(e) => setNewProduct({ ...newProduct, stock: parseInt(e.target.value) || 0 })}
+                  onChange={(e) =>
+                    setNewProduct({
+                      ...newProduct,
+                      stock: parseInt(e.target.value) || 0,
+                    })
+                  }
                   className="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-amber-500"
                 />
                 <input
@@ -212,7 +248,12 @@ const ProductPage = () => {
                   step="0.01"
                   placeholder="Price"
                   value={newProduct.price}
-                  onChange={(e) => setNewProduct({ ...newProduct, price: parseFloat(e.target.value) || 0 })}
+                  onChange={(e) =>
+                    setNewProduct({
+                      ...newProduct,
+                      price: parseFloat(e.target.value) || 0,
+                    })
+                  }
                   className="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-amber-500"
                 />
                 <div className="flex items-center gap-2">
@@ -230,7 +271,11 @@ const ProductPage = () => {
               </div>
               {newProduct.image && (
                 <div className="mt-4">
-                  <img src={newProduct.image} alt="Preview" className="h-32 w-32 object-cover rounded-lg" />
+                  <img
+                    src={newProduct.image}
+                    alt="Preview"
+                    className="h-32 w-32 object-cover rounded-lg"
+                  />
                 </div>
               )}
               <div className="flex gap-3 mt-4">
@@ -243,7 +288,14 @@ const ProductPage = () => {
                 <button
                   onClick={() => {
                     setShowAddForm(false);
-                    setNewProduct({ name: '', type: '', dimensions: '', stock: 0, price: 0, image: '' });
+                    setNewProduct({
+                      name: "",
+                      type: "",
+                      dimensions: "",
+                      stock: 0,
+                      price: 0,
+                      image: "",
+                    });
                   }}
                   className="bg-gray-500 hover:bg-gray-600 text-white px-6 py-2 rounded-lg transition-colors"
                 >
@@ -256,7 +308,10 @@ const ProductPage = () => {
           {/* Products Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {products.map((product) => (
-              <div key={product.id} className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
+              <div
+                key={product.id}
+                className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow"
+              >
                 {/* Product Image */}
                 <div className="relative h-48 bg-gray-200">
                   <img
@@ -284,53 +339,86 @@ const ProductPage = () => {
                       <input
                         type="text"
                         value={editForm.name}
-                        onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
+                        onChange={(e) =>
+                          setEditForm({ ...editForm, name: e.target.value })
+                        }
                         className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-amber-500"
                       />
                       <input
                         type="text"
                         value={editForm.type}
-                        onChange={(e) => setEditForm({ ...editForm, type: e.target.value })}
+                        onChange={(e) =>
+                          setEditForm({ ...editForm, type: e.target.value })
+                        }
                         className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-amber-500"
                       />
                       <input
                         type="text"
                         value={editForm.dimensions}
-                        onChange={(e) => setEditForm({ ...editForm, dimensions: e.target.value })}
+                        onChange={(e) =>
+                          setEditForm({
+                            ...editForm,
+                            dimensions: e.target.value,
+                          })
+                        }
                         className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-amber-500"
                       />
                       <input
                         type="number"
                         value={editForm.stock}
-                        onChange={(e) => setEditForm({ ...editForm, stock: parseInt(e.target.value) || 0 })}
+                        onChange={(e) =>
+                          setEditForm({
+                            ...editForm,
+                            stock: parseInt(e.target.value) || 0,
+                          })
+                        }
                         className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-amber-500"
                       />
                       <input
                         type="number"
                         step="0.01"
                         value={editForm.price}
-                        onChange={(e) => setEditForm({ ...editForm, price: parseFloat(e.target.value) || 0 })}
+                        onChange={(e) =>
+                          setEditForm({
+                            ...editForm,
+                            price: parseFloat(e.target.value) || 0,
+                          })
+                        }
                         className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-amber-500"
                       />
                     </div>
                   ) : (
                     <>
-                      <h3 className="text-xl font-bold text-amber-900">{product.name}</h3>
-                      <p className="text-gray-600 text-sm mt-1">{product.type}</p>
+                      <h3 className="text-xl font-bold text-amber-900">
+                        {product.name}
+                      </h3>
+                      <p className="text-gray-600 text-sm mt-1">
+                        {product.type}
+                      </p>
                       <div className="mt-3 space-y-2">
                         <div className="flex justify-between text-sm">
                           <span className="text-gray-600">Dimensions:</span>
-                          <span className="font-semibold">{product.dimensions}</span>
+                          <span className="font-semibold">
+                            {product.dimensions}
+                          </span>
                         </div>
                         <div className="flex justify-between text-sm">
                           <span className="text-gray-600">Stock:</span>
-                          <span className={`font-semibold ${product.stock < 50 ? 'text-red-600' : 'text-green-600'}`}>
+                          <span
+                            className={`font-semibold ${
+                              product.stock < 50
+                                ? "text-red-600"
+                                : "text-green-600"
+                            }`}
+                          >
                             {product.stock} units
                           </span>
                         </div>
                         <div className="flex justify-between text-sm">
                           <span className="text-gray-600">Price:</span>
-                          <span className="font-semibold text-amber-700">${product.price.toFixed(2)}</span>
+                          <span className="font-semibold text-amber-700">
+                            ${product.price.toFixed(2)}
+                          </span>
                         </div>
                       </div>
                     </>
@@ -384,7 +472,9 @@ const ProductPage = () => {
 
           {products.length === 0 && (
             <div className="bg-white rounded-lg shadow-lg p-12 text-center">
-              <p className="text-gray-500 text-lg">No products found. Add your first timber product!</p>
+              <p className="text-gray-500 text-lg">
+                No products found. Add your first timber product!
+              </p>
             </div>
           )}
         </div>

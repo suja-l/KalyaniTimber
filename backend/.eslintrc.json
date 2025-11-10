@@ -1,0 +1,12 @@
+// backend/.eslintrc.json
+{
+  "root": true,
+  "env": {
+    "node": true, // This allows 'require', 'module', and 'process'
+    "es2020": true
+  },
+  "parserOptions": {
+    "sourceType": "module"
+  },
+  "extends": []
+}

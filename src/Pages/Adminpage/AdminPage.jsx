@@ -1,20 +1,29 @@
-import React, { useState, useEffect } from 'react';
-import { Package, TrendingUp, AlertCircle, DollarSign, Users, ShoppingCart, ArrowRight, BarChart3 } from 'lucide-react';
-import AdminSidebar from '../../Components/AdminSideNavbar.jsx';
+import React, { useState, useEffect } from "react";
+import {
+  Package,
+  TrendingUp,
+  AlertCircle,
+  DollarSign,
+  Users,
+  ShoppingCart,
+  ArrowRight,
+  BarChart3,
+} from "lucide-react";
+import AdminSidebar from "../../Components/AdminSideNavbar.jsx";
 
 const AdminHomepage = () => {
   const [stats, setStats] = useState({
     totalProducts: 0,
     lowStock: 0,
     totalRevenue: 0,
-    recentOrders: 0
+    recentOrders: 0,
   });
 
   const [recentActivity, setRecentActivity] = useState([]);
   const [lowStockProducts, setLowStockProducts] = useState([]);
 
   // Replace with your actual backend endpoint
-  const API_BASE_URL = 'http://localhost:3000/api';
+  const API_BASE_URL = "http://localhost:3000/api";
 
   useEffect(() => {
     fetchDashboardData();
@@ -29,24 +38,44 @@ const AdminHomepage = () => {
       setRecentActivity(data.recentActivity);
       setLowStockProducts(data.lowStockProducts);
     } catch (error) {
-      console.error('Error fetching dashboard data:', error);
+      console.error("Error fetching dashboard data:", error);
       // Fallback demo data
       setStats({
         totalProducts: 45,
         lowStock: 8,
-        totalRevenue: 125840.50,
-        recentOrders: 23
+        totalRevenue: 125840.5,
+        recentOrders: 23,
       });
       setRecentActivity([
-        { id: 1, type: 'order', message: 'New order #1234 - Oak Timber', time: '5 min ago' },
-        { id: 2, type: 'stock', message: 'Low stock alert: Pine Timber', time: '15 min ago' },
-        { id: 3, type: 'product', message: 'Product added: Maple Timber', time: '1 hour ago' },
-        { id: 4, type: 'order', message: 'Order #1233 completed', time: '2 hours ago' }
+        {
+          id: 1,
+          type: "order",
+          message: "New order #1234 - Oak Timber",
+          time: "5 min ago",
+        },
+        {
+          id: 2,
+          type: "stock",
+          message: "Low stock alert: Pine Timber",
+          time: "15 min ago",
+        },
+        {
+          id: 3,
+          type: "product",
+          message: "Product added: Maple Timber",
+          time: "1 hour ago",
+        },
+        {
+          id: 4,
+          type: "order",
+          message: "Order #1233 completed",
+          time: "2 hours ago",
+        },
       ]);
       setLowStockProducts([
-        { id: 1, name: 'Pine Timber 2x4x8', stock: 12, minStock: 50 },
-        { id: 2, name: 'Oak Timber 2x6x10', stock: 8, minStock: 30 },
-        { id: 3, name: 'Cedar Planks', stock: 15, minStock: 40 }
+        { id: 1, name: "Pine Timber 2x4x8", stock: 12, minStock: 50 },
+        { id: 2, name: "Oak Timber 2x6x10", stock: 8, minStock: 30 },
+        { id: 3, name: "Cedar Planks", stock: 15, minStock: 40 },
       ]);
     }
   };
@@ -91,7 +120,7 @@ const AdminHomepage = () => {
   );
 
   return (
-    <div className="flex min-h-screen bg-gradient-to-br from-amber-50 to-orange-100">
+    <div className="flex min-h-screen lg:ml-64 bg-gradient-to-br from-amber-50 to-orange-100">
       {/* Sidebar Component */}
       <AdminSidebar />
 
@@ -102,13 +131,19 @@ const AdminHomepage = () => {
           <div className="px-6 py-4">
             <div className="flex items-center justify-between">
               <div>
-                <h1 className="text-2xl font-bold text-amber-900">Dashboard Overview</h1>
-                <p className="text-gray-600 text-sm mt-1">Welcome back! Here's your business overview</p>
+                <h1 className="text-2xl font-bold text-amber-900">
+                  Dashboard Overview
+                </h1>
+                <p className="text-gray-600 text-sm mt-1">
+                  Welcome back! Here's your business overview
+                </p>
               </div>
               <div className="flex items-center gap-4">
                 <div className="text-right">
                   <p className="text-sm text-gray-500">Last updated</p>
-                  <p className="text-sm font-semibold text-gray-700">{new Date().toLocaleTimeString()}</p>
+                  <p className="text-sm font-semibold text-gray-700">
+                    {new Date().toLocaleTimeString()}
+                  </p>
                 </div>
               </div>
             </div>
@@ -136,7 +171,7 @@ const AdminHomepage = () => {
             <StatCard
               icon={DollarSign}
               title="Total Revenue"
-              value={`$${stats.totalRevenue.toLocaleString()}`}
+              value={`₹${stats.totalRevenue.toLocaleString()}`}
               subtitle="This month"
               color="bg-green-600"
               trend="+8.2%"
@@ -153,7 +188,9 @@ const AdminHomepage = () => {
 
           {/* Quick Actions */}
           <div className="mb-8">
-            <h2 className="text-2xl font-bold text-amber-900 mb-4">Quick Actions</h2>
+            <h2 className="text-2xl font-bold text-amber-900 mb-4">
+              Quick Actions
+            </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               <QuickAction
                 icon={Package}
@@ -190,22 +227,39 @@ const AdminHomepage = () => {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Recent Activity */}
             <div className="lg:col-span-2 bg-white rounded-lg shadow-lg p-6">
-              <h2 className="text-xl font-bold text-amber-900 mb-4">Recent Activity</h2>
+              <h2 className="text-xl font-bold text-amber-900 mb-4">
+                Recent Activity
+              </h2>
               <div className="space-y-4">
                 {recentActivity.map((activity) => (
-                  <div key={activity.id} className="flex items-start gap-4 pb-4 border-b border-gray-200 last:border-0">
-                    <div className={`p-2 rounded-lg ${
-                      activity.type === 'order' ? 'bg-green-100' :
-                      activity.type === 'stock' ? 'bg-red-100' :
-                      'bg-blue-100'
-                    }`}>
-                      {activity.type === 'order' ? <ShoppingCart size={20} className="text-green-600" /> :
-                       activity.type === 'stock' ? <AlertCircle size={20} className="text-red-600" /> :
-                       <Package size={20} className="text-blue-600" />}
+                  <div
+                    key={activity.id}
+                    className="flex items-start gap-4 pb-4 border-b border-gray-200 last:border-0"
+                  >
+                    <div
+                      className={`p-2 rounded-lg ${
+                        activity.type === "order"
+                          ? "bg-green-100"
+                          : activity.type === "stock"
+                          ? "bg-red-100"
+                          : "bg-blue-100"
+                      }`}
+                    >
+                      {activity.type === "order" ? (
+                        <ShoppingCart size={20} className="text-green-600" />
+                      ) : activity.type === "stock" ? (
+                        <AlertCircle size={20} className="text-red-600" />
+                      ) : (
+                        <Package size={20} className="text-blue-600" />
+                      )}
                     </div>
                     <div className="flex-1">
-                      <p className="text-gray-900 font-medium">{activity.message}</p>
-                      <p className="text-gray-500 text-sm mt-1">{activity.time}</p>
+                      <p className="text-gray-900 font-medium">
+                        {activity.message}
+                      </p>
+                      <p className="text-gray-500 text-sm mt-1">
+                        {activity.time}
+                      </p>
                     </div>
                   </div>
                 ))}
@@ -219,26 +273,39 @@ const AdminHomepage = () => {
             <div className="bg-white rounded-lg shadow-lg p-6">
               <div className="flex items-center gap-2 mb-4">
                 <AlertCircle className="text-red-600" size={24} />
-                <h2 className="text-xl font-bold text-amber-900">Low Stock Alerts</h2>
+                <h2 className="text-xl font-bold text-amber-900">
+                  Low Stock Alerts
+                </h2>
               </div>
               <div className="space-y-4">
                 {lowStockProducts.map((product) => (
-                  <div key={product.id} className="p-3 bg-red-50 rounded-lg border border-red-200">
-                    <p className="font-semibold text-gray-900 text-sm">{product.name}</p>
+                  <div
+                    key={product.id}
+                    className="p-3 bg-red-50 rounded-lg border border-red-200"
+                  >
+                    <p className="font-semibold text-gray-900 text-sm">
+                      {product.name}
+                    </p>
                     <div className="flex items-center justify-between mt-2">
-                      <span className="text-xs text-gray-600">Current: {product.stock}</span>
-                      <span className="text-xs text-red-600 font-semibold">Min: {product.minStock}</span>
+                      <span className="text-xs text-gray-600">
+                        Current: {product.stock}
+                      </span>
+                      <span className="text-xs text-red-600 font-semibold">
+                        Min: {product.minStock}
+                      </span>
                     </div>
                     <div className="w-full bg-red-200 rounded-full h-2 mt-2">
-                      <div 
-                        className="bg-red-600 h-2 rounded-full" 
-                        style={{ width: `${(product.stock / product.minStock) * 100}%` }}
+                      <div
+                        className="bg-red-600 h-2 rounded-full"
+                        style={{
+                          width: `${(product.stock / product.minStock) * 100}%`,
+                        }}
                       />
                     </div>
                   </div>
                 ))}
               </div>
-              <a 
+              <a
                 href="/admin/products"
                 className="block w-full mt-4 text-center bg-red-600 hover:bg-red-700 text-white font-semibold text-sm py-2 rounded-lg transition-colors"
               >
@@ -249,12 +316,16 @@ const AdminHomepage = () => {
 
           {/* Sales Chart Placeholder */}
           <div className="mt-6 bg-white rounded-lg shadow-lg p-6">
-            <h2 className="text-xl font-bold text-amber-900 mb-4">Sales Overview</h2>
+            <h2 className="text-xl font-bold text-amber-900 mb-4">
+              Sales Overview
+            </h2>
             <div className="h-64 flex items-center justify-center bg-gradient-to-r from-amber-100 to-orange-100 rounded-lg">
               <div className="text-center">
                 <BarChart3 size={48} className="text-amber-600 mx-auto mb-2" />
                 <p className="text-gray-600">Chart visualization coming soon</p>
-                <p className="text-sm text-gray-500 mt-1">Connect analytics API to display data</p>
+                <p className="text-sm text-gray-500 mt-1">
+                  Connect analytics API to display data
+                </p>
               </div>
             </div>
           </div>

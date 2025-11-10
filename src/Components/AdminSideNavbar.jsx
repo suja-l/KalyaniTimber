@@ -37,23 +37,23 @@ const AdminSidebar = () => {
   // Close sidebar on escape key
   useEffect(() => {
     const handleEscape = (e) => {
-      if (e.key === 'Escape') setSidebarOpen(false);
+      if (e.key === "Escape") setSidebarOpen(false);
     };
     if (sidebarOpen) {
-      document.addEventListener('keydown', handleEscape);
-      return () => document.removeEventListener('keydown', handleEscape);
+      document.addEventListener("keydown", handleEscape);
+      return () => document.removeEventListener("keydown", handleEscape);
     }
   }, [sidebarOpen]);
 
   // Prevent body scroll when mobile menu is open
   useEffect(() => {
     if (sidebarOpen) {
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = '';
+      document.body.style.overflow = "";
     }
     return () => {
-      document.body.style.overflow = '';
+      document.body.style.overflow = "";
     };
   }, [sidebarOpen]);
 
@@ -80,12 +80,12 @@ const AdminSidebar = () => {
 
       {/* Sidebar */}
       <aside
-        className={`fixed lg:static inset-y-0 left-0 z-50 bg-amber-900 text-white transform ${
+        className={`fixed lg:fixed top-16  inset-y-0 left-0 z-50 bg-amber-900 text-white transform ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
-        } lg:translate-x-0 w-64 transition-transform duration-300 flex flex-col shadow-2xl lg:shadow-none mt-16 lg:mt-0`}
+        } lg:translate-x-0 w-64 transition-transform duration-300 flex flex-col shadow-2xl lg:shadow-none `}
       >
         {/* Header - Only visible on desktop */}
-        <div className="hidden lg:flex p-6 items-center justify-between border-b border-amber-800">
+        <div className="hidden lg:flex p-6 top-64 items-center justify-between border-b border-amber-800">
           <h2 className="text-xl font-bold">Timber Admin</h2>
         </div>
 
