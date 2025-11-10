@@ -22,8 +22,9 @@ const AdminHomepage = () => {
   const [recentActivity, setRecentActivity] = useState([]);
   const [lowStockProducts, setLowStockProducts] = useState([]);
 
-  // Replace with your actual backend endpoint
-  const API_BASE_URL = "http://localhost:3000/api";
+  // --- Uses the working proxy path to the Express backend ---
+  const API_PRODUCTS_URL = "/products";
+  // --------------------------------------------------------
 
   useEffect(() => {
     fetchDashboardData();
@@ -31,21 +32,30 @@ const AdminHomepage = () => {
 
   const fetchDashboardData = async () => {
     try {
-      // Fetch stats from backend
-      const response = await fetch(`${API_BASE_URL}/dashboard/stats`);
-      const data = await response.json();
-      setStats(data.stats);
-      setRecentActivity(data.recentActivity);
-      setLowStockProducts(data.lowStockProducts);
-    } catch (error) {
-      console.error("Error fetching dashboard data:", error);
-      // Fallback demo data
-      setStats({
-        totalProducts: 45,
+      // 1. Fetch ALL products (for the count)
+      const productsResponse = await fetch(API_PRODUCTS_URL);
+
+      if (!productsResponse.ok) {
+        throw new Error(
+          `Products API failed with status: ${productsResponse.status}`
+        );
+      }
+
+      const productsData = await productsResponse.json();
+
+      // 2. Update stats dynamically and keep placeholders for other data
+      setStats((prevStats) => ({
+        ...prevStats,
+        // LIVE DATA: Update Total Products Count
+        totalProducts: productsData.length,
+
+        // PLACEHOLDER STATS (for future implementation)
         lowStock: 8,
         totalRevenue: 125840.5,
         recentOrders: 23,
-      });
+      }));
+
+      // 3. Set placeholder data for lists
       setRecentActivity([
         {
           id: 1,
@@ -59,24 +69,21 @@ const AdminHomepage = () => {
           message: "Low stock alert: Pine Timber",
           time: "15 min ago",
         },
-        {
-          id: 3,
-          type: "product",
-          message: "Product added: Maple Timber",
-          time: "1 hour ago",
-        },
-        {
-          id: 4,
-          type: "order",
-          message: "Order #1233 completed",
-          time: "2 hours ago",
-        },
       ]);
       setLowStockProducts([
         { id: 1, name: "Pine Timber 2x4x8", stock: 12, minStock: 50 },
-        { id: 2, name: "Oak Timber 2x6x10", stock: 8, minStock: 30 },
-        { id: 3, name: "Cedar Planks", stock: 15, minStock: 40 },
       ]);
+    } catch (error) {
+      console.error("Error fetching dashboard data:", error);
+      // Fallback on error
+      setStats({
+        totalProducts: "N/A",
+        lowStock: 8,
+        totalRevenue: 125840.5,
+        recentOrders: 23,
+      });
+      setRecentActivity([]);
+      setLowStockProducts([]);
     }
   };
 
@@ -159,7 +166,7 @@ const AdminHomepage = () => {
               value={stats.totalProducts}
               subtitle="Active inventory items"
               color="bg-blue-600"
-              trend="+12%"
+              trend={stats.totalProducts > 0 ? "Live Data" : "Loading"}
             />
             <StatCard
               icon={AlertCircle}
