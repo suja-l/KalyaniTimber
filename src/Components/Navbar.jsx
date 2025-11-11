@@ -1,5 +1,7 @@
+// src/Components/Navbar.jsx
+
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom"; // Import useNavigate
 import ktm_logo from "../assets/ktmlogo.png";
 
 const NavLink = ({ href, children }) => (
@@ -14,6 +16,8 @@ const NavLink = ({ href, children }) => (
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isSearchFocused, setIsSearchFocused] = useState(false);
+  const [searchTerm, setSearchTerm] = useState(""); // <-- ADDED: State for search input
+  const navigate = useNavigate(); // <-- ADDED: Hook for navigation
 
   const navItems = [
     { name: "Home", href: "/" },
@@ -22,6 +26,18 @@ export default function Navbar() {
     { name: "Contact Us", href: "/contact" },
     { name: "Admin", href: "/admin" },
   ];
+
+  // <-- ADDED: Function to handle search submit
+  const handleSearchSubmit = (e) => {
+    e.preventDefault(); // Prevent page reload
+    if (searchTerm.trim()) {
+      // Navigate to products page with search query
+      navigate(`/products?search=${encodeURIComponent(searchTerm.trim())}`);
+      setSearchTerm(""); // Clear search bar
+      setIsOpen(false); // Close mobile menu if open
+      setIsSearchFocused(false);
+    }
+  };
 
   return (
     <nav className="sticky top-0 z-1000 bg-white shadow-md h-16">
@@ -42,7 +58,11 @@ export default function Navbar() {
 
           {/* Desktop nav + search */}
           <div className="hidden md:flex items-center space-x-8">
-            <div className="relative flex items-center">
+            {/* --- UPDATED: Wrapped in a form --- */}
+            <form
+              onSubmit={handleSearchSubmit}
+              className="relative flex items-center"
+            >
               <svg
                 className={`w-5 h-5 transition-colors ${
                   isSearchFocused ? "text-amber-900" : "text-gray-400"
@@ -62,6 +82,8 @@ export default function Navbar() {
               <input
                 type="text"
                 placeholder="Search"
+                value={searchTerm} // <-- ADDED
+                onChange={(e) => setSearchTerm(e.target.value)} // <-- ADDED
                 onFocus={() => setIsSearchFocused(true)}
                 onBlur={() => setIsSearchFocused(false)}
                 className={`ml-2 p-1 text-sm outline-none border-b-2 text-gray-800 transition-all duration-300 ${
@@ -70,7 +92,8 @@ export default function Navbar() {
                     : "w-24 border-transparent"
                 }`}
               />
-            </div>
+            </form>
+            {/* --- END UPDATE --- */}
 
             <div className="flex space-x-6">
               {navItems.map((item) => (
@@ -139,18 +162,26 @@ export default function Navbar() {
             <Link
               key={item.name}
               to={item.href}
+              onClick={() => setIsOpen(false)} // <-- ADDED: Close menu on nav
               className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-stone-100 hover:text-amber-800"
             >
               {item.name}
             </Link>
           ))}
-          <div className="relative px-3 py-2">
+          {/* --- UPDATED: Wrapped in a form --- */}
+          <form
+            onSubmit={handleSearchSubmit}
+            className="relative px-3 py-2"
+          >
             <input
               type="text"
               placeholder="Search..."
+              value={searchTerm} // <-- ADDED
+              onChange={(e) => setSearchTerm(e.target.value)} // <-- ADDED
               className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-900"
             />
-          </div>
+          </form>
+          {/* --- END UPDATE --- */}
         </div>
       </div>
     </nav>
