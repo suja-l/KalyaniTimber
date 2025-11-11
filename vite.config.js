@@ -7,14 +7,18 @@ import tailwindcss from "@tailwindcss/vite";
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react(), tailwindcss()],
-  // --- ADD PROXY CONFIGURATION ---
+  // --- PROXY CONFIGURATION ---
   server: {
     proxy: {
-      // Proxy requests starting with /products to the backend port 5000
+      // Proxy requests starting with /products
       "/products": {
         target: "http://localhost:5000", // Your Express server port
         changeOrigin: true,
-        // No rewrite needed, as the backend uses /products directly
+      },
+      // ADDED: Proxy requests starting with /orders
+      "/orders": {
+        target: "http://localhost:5000", // Your Express server port
+        changeOrigin: true,
       },
     },
   },

@@ -6,6 +6,7 @@ const cors = require("cors");
 require("dotenv").config();
 
 const productRouter = require("./routes/products");
+const orderRouter = require("./routes/orders"); // <-- ADDED
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -45,6 +46,7 @@ mongoose.connection.on("disconnected", () => {
 
 // 3. Router Integration
 app.use("/products", productRouter);
+app.use("/orders", orderRouter); // <-- ADDED
 
 // 4. Test route
 app.get("/", (req, res) => {
@@ -66,4 +68,5 @@ app.listen(port, () => {
   console.log(`🚀 Server is running on port: ${port}`);
   console.log(`📍 Access at: http://localhost:${port}`);
   console.log(`📦 Products endpoint: http://localhost:${port}/products`);
+  console.log(`🛒 Orders endpoint: http://localhost:${port}/orders`); // <-- ADDED
 });
