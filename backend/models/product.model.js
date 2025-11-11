@@ -7,6 +7,7 @@ const productSchema = new Schema(
   {
     name: { type: String, required: true, trim: true, minlength: 3 },
     category: { type: String, required: true, trim: true },
+    brand: { type: String, trim: true }, // <-- ADDED THIS LINE (optional)
     price: { type: Number, required: true },
     unit: { type: String, required: true },
     description: { type: String, required: true },

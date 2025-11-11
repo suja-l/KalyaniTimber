@@ -14,12 +14,22 @@ router.route("/").get((req, res) => {
 
 // --- ADD a new product: POST /products/add ---
 router.route("/add").post((req, res) => {
-  const { name, category, price, unit, description, imageUrl, tags, specs } =
-    req.body;
+  const {
+    name,
+    category,
+    brand, // <-- 1. ADDED THIS
+    price,
+    unit,
+    description,
+    imageUrl,
+    tags,
+    specs,
+  } = req.body;
 
   const newProduct = new Product({
     name,
     category,
+    brand, // <-- 2. ADDED THIS
     price,
     unit,
     description,

@@ -1,3 +1,5 @@
+// src/Pages/Adminpage/AdminProduct.jsx
+
 import React, { useState, useEffect } from "react";
 import { Trash2, Edit2, Save, X, Plus, Upload, Package } from "lucide-react";
 import AdminSidebar from "../../Components/AdminSideNavbar.jsx";
@@ -12,6 +14,7 @@ const ProductPage = () => {
   const initialNewProductState = {
     name: "",
     category: "",
+    brand: "",
     price: 0,
     unit: "",
     description: "",
@@ -25,7 +28,7 @@ const ProductPage = () => {
   };
   const [newProduct, setNewProduct] = useState(initialNewProductState);
 
-  // Uses the configured Vite proxy: http://localhost:5173/products -> http://localhost:5000/products
+  // Uses the configured Vite proxy
   const API_BASE_URL = "/products";
 
   // --- 1. FETCH PRODUCTS (READ) ---
@@ -45,12 +48,13 @@ const ProductPage = () => {
       setProducts(data);
     } catch (error) {
       console.error("Error fetching live products:", error);
-      // Fallback data structure for local testing if the API is slow/failing
+      // Fallback data
       setProducts([
         {
           _id: "dummy1",
           name: "Teak Wood (Fallback)",
           category: "Hardwood",
+          brand: "Local",
           price: 1500.0,
           unit: "sq ft",
           description: "Sample fallback data loaded.",
@@ -64,7 +68,6 @@ const ProductPage = () => {
 
   // --- 2. ADD PRODUCT (CREATE) ---
   const handleAdd = async () => {
-    // Basic Validation
     if (
       !newProduct.name ||
       !newProduct.price ||
@@ -77,7 +80,6 @@ const ProductPage = () => {
       return;
     }
 
-    // Prepare data for the backend (converting tags string to array)
     const dataToSend = {
       ...newProduct,
       price: parseFloat(newProduct.price),
@@ -98,7 +100,7 @@ const ProductPage = () => {
         const addedProduct = await response.json();
         setProducts([...products, addedProduct]);
         setShowAddForm(false);
-        setNewProduct(initialNewProductState); // Reset form
+        setNewProduct(initialNewProductState);
         alert("Product added successfully to MongoDB!");
       } else {
         const errorText = await response.text();
@@ -115,7 +117,6 @@ const ProductPage = () => {
     const dataToSend = {
       ...editForm,
       price: parseFloat(editForm.price),
-      // Tags in editForm is currently a string, convert back to array
       tags: editForm.tags
         .split(",")
         .map((tag) => tag.trim())
@@ -166,19 +167,21 @@ const ProductPage = () => {
     }
   };
 
-  // Utility to start editing
+  // --- 5. START EDIT (FIXED) ---
+  // This function now guarantees that .specs will be an object
   const startEdit = (product) => {
     setEditingId(product._id || product.id);
-    // Format tags array back to string for the input field
     setEditForm({
       ...product,
+      // **THE FIX**: Ensure specs is an object, even if product.specs is null/undefined
+      specs: product.specs || { density: "", origin: "", grade: "" },
       tags: Array.isArray(product.tags)
         ? product.tags.join(", ")
         : product.tags || "",
     });
   };
 
-  // Image upload handler (for local preview/setting URL field)
+  // Image upload handler
   const handleImageUpload = (e, isNew = false) => {
     const file = e.target.files[0];
     if (file) {
@@ -248,19 +251,27 @@ const ProductPage = () => {
                   className="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-amber-500"
                 />
                 <input
+                  type="text"
+                  placeholder="3. Brand (e.g., Greenply)"
+                  value={newProduct.brand}
+                  onChange={(e) =>
+                    setNewProduct({ ...newProduct, brand: e.target.value })
+                  }
+                  className="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                />
+                <input
                   type="number"
                   step="0.01"
-                  placeholder="3. Price (Required)"
+                  placeholder="4. Price (Required)"
                   value={newProduct.price}
                   onChange={(e) =>
                     setNewProduct({ ...newProduct, price: e.target.value })
                   }
                   className="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-amber-500"
                 />
-
                 <input
                   type="text"
-                  placeholder="4. Unit (e.g., sq ft)"
+                  placeholder="5. Unit (e.g., sq ft)"
                   value={newProduct.unit}
                   onChange={(e) =>
                     setNewProduct({ ...newProduct, unit: e.target.value })
@@ -269,7 +280,7 @@ const ProductPage = () => {
                 />
                 <input
                   type="url"
-                  placeholder="5. Image URL (Required)"
+                  placeholder="6. Image URL (Required)"
                   value={newProduct.imageUrl}
                   onChange={(e) =>
                     setNewProduct({ ...newProduct, imageUrl: e.target.value })
@@ -278,17 +289,17 @@ const ProductPage = () => {
                 />
                 <input
                   type="text"
-                  placeholder="6. Tags (Comma separated)"
+                  placeholder="7. Tags (Comma separated)"
                   value={newProduct.tags}
                   onChange={(e) =>
                     setNewProduct({ ...newProduct, tags: e.target.value })
                   }
-                  className="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                  className="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-amber-500 md:col-span-2"
                 />
 
                 {/* DESCRIPTION (Full Width) */}
                 <textarea
-                  placeholder="7. Detailed Description (Required)"
+                  placeholder="8. Detailed Description (Required)"
                   rows="3"
                   value={newProduct.description}
                   onChange={(e) =>
@@ -322,8 +333,8 @@ const ProductPage = () => {
                   value={newProduct.specs.origin}
                   onChange={(e) =>
                     setNewProduct({
-                      ...newProduct.specs,
-                      origin: e.target.value,
+                      ...newProduct,
+                      specs: { ...newProduct.specs, origin: e.target.value },
                     })
                   }
                   className="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-amber-500"
@@ -376,7 +387,7 @@ const ProductPage = () => {
 
             {products.map((product) => (
               <div
-                key={product._id || product.id} // CRITICAL: Use MongoDB _id
+                key={product._id || product.id}
                 className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow"
               >
                 {/* Product Image */}
@@ -403,7 +414,7 @@ const ProductPage = () => {
                 <div className="p-5">
                   {editingId === product._id ? (
                     <div className="space-y-3">
-                      {/* Editing Inputs */}
+                      {/* Editing Inputs (NOW COMPLETE) */}
                       <input
                         type="text"
                         value={editForm.name}
@@ -421,6 +432,15 @@ const ProductPage = () => {
                         }
                         className="w-full border border-gray-300 rounded px-3 py-2"
                         placeholder="Category"
+                      />
+                      <input
+                        type="text"
+                        value={editForm.brand}
+                        onChange={(e) =>
+                          setEditForm({ ...editForm, brand: e.target.value })
+                        }
+                        className="w-full border border-gray-300 rounded px-3 py-2"
+                        placeholder="Brand"
                       />
                       <input
                         type="text"
@@ -462,6 +482,44 @@ const ProductPage = () => {
                         placeholder="Description"
                         rows={3}
                       />
+                      {/* --- ADDED SPECS TO EDIT FORM --- */}
+                      <h4 className="text-sm font-semibold pt-2">Specs:</h4>
+                      <input
+                        type="text"
+                        value={editForm.specs.origin}
+                        onChange={(e) =>
+                          setEditForm({
+                            ...editForm,
+                            specs: { ...editForm.specs, origin: e.target.value },
+                          })
+                        }
+                        className="w-full border border-gray-300 rounded px-3 py-2"
+                        placeholder="Origin"
+                      />
+                      <input
+                        type="text"
+                        value={editForm.specs.density}
+                        onChange={(e) =>
+                          setEditForm({
+                            ...editForm,
+                            specs: { ...editForm.specs, density: e.target.value },
+                          })
+                        }
+                        className="w-full border border-gray-300 rounded px-3 py-2"
+                        placeholder="Density"
+                      />
+                      <input
+                        type="text"
+                        value={editForm.specs.grade}
+                        onChange={(e) =>
+                          setEditForm({
+                            ...editForm,
+                            specs: { ...editForm.specs, grade: e.target.value },
+                          })
+                        }
+                        className="w-full border border-gray-300 rounded px-3 py-2"
+                        placeholder="Grade"
+                      />
                     </div>
                   ) : (
                     <>
@@ -469,7 +527,10 @@ const ProductPage = () => {
                         {product.name}
                       </h3>
                       <p className="text-gray-600 text-sm mt-1">
-                        Category: {product.category} | Unit: {product.unit}
+                        Category: {product.category}
+                      </p>
+                      <p className="text-gray-600 text-sm mt-1">
+                        Brand: {product.brand || "N/A"}
                       </p>
 
                       <div className="mt-3 space-y-2">
@@ -492,6 +553,12 @@ const ProductPage = () => {
                           </span>
                         </div>
                         <div className="flex justify-between text-sm">
+                          <span className="text-gray-600">Unit:</span>
+                          <span className="font-semibold text-gray-700">
+                            {product.unit}
+                          </span>
+                        </div>
+                        <div className="flex justify-between text-sm">
                           <span className="text-gray-600">Price:</span>
                           <span className="font-semibold text-amber-700">
                             ₹{product.price?.toFixed(2) || "0.00"}
@@ -506,7 +573,7 @@ const ProductPage = () => {
                     {editingId === product._id ? (
                       <>
                         <button
-                          onClick={() => handleUpdate(product._id)} // Use Mongoose _id
+                          onClick={() => handleUpdate(product._id)}
                           className="flex-1 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors"
                         >
                           <Save size={18} /> Save
@@ -530,7 +597,7 @@ const ProductPage = () => {
                           <Edit2 size={18} /> Edit
                         </button>
                         <button
-                          onClick={() => handleDelete(product._id)} // Use Mongoose _id
+                          onClick={() => handleDelete(product._id)}
                           className="flex-1 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors"
                         >
                           <Trash2 size={18} /> Delete
