@@ -12,12 +12,24 @@ router.route("/").get((req, res) => {
     .catch((err) => res.status(400).json("Error: " + err));
 });
 
+// --- ADDED: GET a single product by ID: GET /products/:id ---
+router.route("/:id").get((req, res) => {
+  Product.findById(req.params.id)
+    .then((product) => {
+      if (!product) {
+        return res.status(404).json("Error: Product not found");
+      }
+      res.json(product);
+    })
+    .catch((err) => res.status(400).json("Error: " + err));
+});
+
 // --- ADD a new product: POST /products/add ---
 router.route("/add").post((req, res) => {
   const {
     name,
     category,
-    brand, // <-- 1. ADDED THIS
+    brand,
     price,
     unit,
     description,
@@ -29,7 +41,7 @@ router.route("/add").post((req, res) => {
   const newProduct = new Product({
     name,
     category,
-    brand, // <-- 2. ADDED THIS
+    brand,
     price,
     unit,
     description,
@@ -44,11 +56,9 @@ router.route("/add").post((req, res) => {
     .catch((err) => res.status(400).json("Error: " + err));
 });
 
-// --- NEW FIX: UPDATE (PUT) a product by ID ---
+// --- UPDATE (PUT) a product by ID ---
 // Route: PUT /products/:id
 router.route("/:id").put((req, res) => {
-  // findByIdAndUpdate finds the document, updates it with req.body,
-  // and returns the updated document ({ new: true })
   Product.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
     runValidators: true,
@@ -62,7 +72,7 @@ router.route("/:id").put((req, res) => {
     .catch((err) => res.status(400).json("Error: " + err));
 });
 
-// --- NEW FIX: DELETE a product by ID ---
+// --- DELETE a product by ID ---
 // Route: DELETE /products/:id
 router.route("/:id").delete((req, res) => {
   Product.findByIdAndDelete(req.params.id)

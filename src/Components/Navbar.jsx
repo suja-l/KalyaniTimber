@@ -1,40 +1,57 @@
 // src/Components/Navbar.jsx
 
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom"; // Import useNavigate
+import React, { useState, useContext } from "react"; // <-- 1. IMPORT useContext
+import { Link, useNavigate } from "react-router-dom";
+import { StoreContext } from "../context/StoreContext"; // <-- 2. IMPORT StoreContext
 import ktm_logo from "../assets/ktmlogo.png";
 
-const NavLink = ({ href, children }) => (
+// --- 3. UPDATED NavLink to handle context ---
+const NavLink = ({ href, children, badgeCount }) => (
   <Link
     to={href}
-    className="text-gray-700 hover:text-amber-800 font-medium transition duration-150"
+    className="relative text-gray-700 hover:text-amber-800 font-medium transition duration-150"
   >
     {children}
+    {badgeCount > 0 && (
+      <span className="absolute -top-2 -right-3 bg-red-600 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">
+        {badgeCount}
+      </span>
+    )}
   </Link>
 );
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isSearchFocused, setIsSearchFocused] = useState(false);
-  const [searchTerm, setSearchTerm] = useState(""); // <-- ADDED: State for search input
-  const navigate = useNavigate(); // <-- ADDED: Hook for navigation
+  const [searchTerm, setSearchTerm] = useState("");
+  const navigate = useNavigate();
+
+  // --- 4. HOOK INTO THE GLOBAL CONTEXT ---
+  const { cartItems, favorites } = useContext(StoreContext);
 
   const navItems = [
     { name: "Home", href: "/" },
     { name: "Products", href: "/products" },
-    { name: "Services", href: "/services" },
-    { name: "Contact Us", href: "/contact" },
+    // --- 5. UPDATED navItems to show counts ---
+    {
+      name: "Favorites",
+      href: "/favorites", // (This page doesn't exist yet)
+      badgeCount: favorites.length,
+    },
+    {
+      name: "Cart",
+      href: "/cart", // (This page doesn't exist yet)
+      badgeCount: cartItems.length,
+    },
     { name: "Admin", href: "/admin" },
   ];
 
-  // <-- ADDED: Function to handle search submit
   const handleSearchSubmit = (e) => {
-    e.preventDefault(); // Prevent page reload
+    e.preventDefault();
     if (searchTerm.trim()) {
-      // Navigate to products page with search query
       navigate(`/products?search=${encodeURIComponent(searchTerm.trim())}`);
-      setSearchTerm(""); // Clear search bar
-      setIsOpen(false); // Close mobile menu if open
+      setSearchTerm("");
+      setIsOpen(false);
       setIsSearchFocused(false);
     }
   };
@@ -58,7 +75,6 @@ export default function Navbar() {
 
           {/* Desktop nav + search */}
           <div className="hidden md:flex items-center space-x-8">
-            {/* --- UPDATED: Wrapped in a form --- */}
             <form
               onSubmit={handleSearchSubmit}
               className="relative flex items-center"
@@ -82,8 +98,8 @@ export default function Navbar() {
               <input
                 type="text"
                 placeholder="Search"
-                value={searchTerm} // <-- ADDED
-                onChange={(e) => setSearchTerm(e.target.value)} // <-- ADDED
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
                 onFocus={() => setIsSearchFocused(true)}
                 onBlur={() => setIsSearchFocused(false)}
                 className={`ml-2 p-1 text-sm outline-none border-b-2 text-gray-800 transition-all duration-300 ${
@@ -93,11 +109,15 @@ export default function Navbar() {
                 }`}
               />
             </form>
-            {/* --- END UPDATE --- */}
 
             <div className="flex space-x-6">
+              {/* --- 6. UPDATED NavLink rendering --- */}
               {navItems.map((item) => (
-                <NavLink key={item.name} href={item.href}>
+                <NavLink
+                  key={item.name}
+                  href={item.href}
+                  badgeCount={item.badgeCount}
+                >
                   {item.name}
                 </NavLink>
               ))}
@@ -158,17 +178,22 @@ export default function Navbar() {
         id="mobile-menu"
       >
         <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+          {/* --- 7. UPDATED Mobile NavLink rendering --- */}
           {navItems.map((item) => (
             <Link
               key={item.name}
               to={item.href}
-              onClick={() => setIsOpen(false)} // <-- ADDED: Close menu on nav
-              className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-stone-100 hover:text-amber-800"
+              onClick={() => setIsOpen(false)}
+              className="relative block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-stone-100 hover:text-amber-800"
             >
               {item.name}
+              {item.badgeCount > 0 && (
+                <span className="absolute left-1/2 -top-0 bg-red-600 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">
+                  {item.badgeCount}
+                </span>
+              )}
             </Link>
           ))}
-          {/* --- UPDATED: Wrapped in a form --- */}
           <form
             onSubmit={handleSearchSubmit}
             className="relative px-3 py-2"
@@ -176,12 +201,11 @@ export default function Navbar() {
             <input
               type="text"
               placeholder="Search..."
-              value={searchTerm} // <-- ADDED
-              onChange={(e) => setSearchTerm(e.target.value)} // <-- ADDED
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-900"
             />
           </form>
-          {/* --- END UPDATE --- */}
         </div>
       </div>
     </nav>
