@@ -1,15 +1,26 @@
 import React from "react";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 import timberimg from "../../assets/KTM.png";
 import { Button } from "../../Components/Button";
 import FeatureIconCard from "../../Components/FeatureIconCard";
+
 export default function homepage() {
+  const navigate = useNavigate(); // Initialize navigate
+
   const productCategories = [
-    { title: "Timber", icon: "HardHat" }, // Representing construction/wood
-    { title: "Doors", icon: "ExternalLink" }, // Representing a door/opening
-    { title: "Plywoods & Laminates", icon: "Layers" }, // Representing stacked material
-    { title: "Hardwares", icon: "Tool" }, // Representing tools/hardware
-    { title: "Adhesives", icon: "Droplet" }, // Representing liquids/glue
+    { title: "Timber", icon: "HardHat" },
+    { title: "Doors", icon: "ExternalLink" },
+    { title: "Plywoods & Laminates", icon: "Layers" },
+    { title: "Hardwares", icon: "Tool" },
+    { title: "Adhesives", icon: "Droplet" },
   ];
+
+  // Function to handle category click
+  const handleCategoryClick = (category) => {
+    // Redirects to /products?search=CategoryName
+    navigate(`/products?search=${encodeURIComponent(category)}`);
+  };
+
   return (
     <>
       <div className="flex">
@@ -27,7 +38,7 @@ export default function homepage() {
           <Button
             className="mx-10"
             text="Get Started"
-            onClick={() => alert("Button Clicked!")}
+            onClick={() => navigate("/products")} // Redirect to all products
           />
         </div>
         <div>
@@ -49,6 +60,7 @@ export default function homepage() {
               key={item.title}
               title={item.title}
               iconName={item.icon}
+              onClick={() => handleCategoryClick(item.title)} // Pass click handler
             />
           ))}
         </div>
@@ -56,9 +68,9 @@ export default function homepage() {
       <div className="text-center py-16">
         <p className="text-base text-gray-700 max-w-4xl mx-auto">
           With over 20 years of trusted experience, Kalyani Timber Mart stands
-          as a leading supplier of premium-quality timber in Bengaluru. Located
-          on Sarjapur Main Road, we offer a wide selection of Burma Teak, sal
-          wood , Pinewood, and Hardwood—each piece carefully sourced and
+          as a leading supplier of premium-quality timber in Bengaluru.
+          Located on Sarjapur Main Road, we offer a wide selection of Burma Teak, 
+          sal wood, Pinewood, and Hardwood—each piece carefully sourced and 
           inspected for superior strength and finish.
         </p>
         <p className="text-base text-gray-700 max-w-4xl mx-auto mt-4">

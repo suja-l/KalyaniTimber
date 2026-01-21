@@ -15,7 +15,6 @@ export const StoreProvider = ({ children }) => {
     // For now, we just add the product.
     // A more advanced cart would check quantity.
     setCartItems((prevItems) => [...prevItems, product]);
-    alert(`${product.name} added to cart!`);
   };
 
   const removeFromCart = (productId) => {
