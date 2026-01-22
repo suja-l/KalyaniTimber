@@ -1,13 +1,26 @@
+// backend/models/product.model.js
+
 const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
 
-const ProductSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  description: { type: String },
-  category: { type: String },
-  price: { type: Number, required: true },
-  stock: { type: Number, required: true, default: 0 },
-  warehouse: { type: String, default: "Main Warehouse" }, // New field
-  imageUrl: { type: String },
-}, { timestamps: true });
+const productSchema = new Schema(
+  {
+    name: { type: String, required: true },
+    category: { type: String, required: true },
+    brand: { type: String },
+    price: { type: Number, required: true },
+    stock: { type: Number, default: 0 }, // Ensure stock is defined
+    warehouse: { type: String, default: "Main Yard" }, // Added warehouse field
+    unit: { type: String },
+    description: { type: String },
+    imageUrl: { type: String },
+    tags: [String],
+    specs: { type: Map, of: String },
+  },
+  {
+    timestamps: true,
+  }
+);
 
-module.exports = mongoose.model("Product", ProductSchema);
+const Product = mongoose.model("Product", productSchema);
+module.exports = Product;

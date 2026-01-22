@@ -48,28 +48,38 @@ const AdminInventory = () => {
   const openEditModal = (item) => {
     setEditingItem(item);
     setNewStock(item.stock);
-    setNewWarehouse(item.warehouse || "Main Warehouse");
+    setNewWarehouse(item.warehouse || "Kalyani Doors");
     setIsModalOpen(true);
   };
 
+  // Corrected handleUpdate to use the PATCH /inventory/:id route
   const handleUpdate = async () => {
+    if (!editingItem) return;
+
     try {
-      const response = await fetch(`${API_PRODUCTS_URL}/${editingItem._id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
-          ...editingItem,
-          stock: Number(newStock), 
-          warehouse: newWarehouse 
+      const response = await fetch(`${API_PRODUCTS_URL}/inventory/${editingItem._id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          stock: Number(newStock),
+          warehouse: newWarehouse,
         }),
       });
 
-      if (response.ok) {
-        setIsModalOpen(false);
-        fetchInventory();
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData || "Failed to update inventory");
       }
+
+      // Refresh local state, close modal, and notify user
+      await fetchInventory(); 
+      setIsModalOpen(false);
+     
     } catch (error) {
-      console.error("Update failed", error);
+      console.error("Update Error:", error);
+      alert("Error updating database: " + error.message);
     }
   };
 
@@ -94,9 +104,7 @@ const AdminInventory = () => {
     <div className="flex min-h-screen bg-gray-50">
       <AdminSidebar />
 
-      {/* Main Content Area - Added relative and w-full to ensure it fills space correctly */}
       <main className="flex-1 lg:ml-64 p-4 md:p-8 w-full transition-all duration-300">
-        
         {/* Header Section */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
           <div>
@@ -136,11 +144,9 @@ const AdminInventory = () => {
           </div>
         </div>
 
-        {/* Filter Toolbar - Ensure this is visible and not hidden behind other elements */}
+        {/* Filter Toolbar */}
         <div className="bg-white p-4 rounded-t-xl border border-gray-200 shadow-sm mb-0 relative z-10">
           <div className="flex flex-col lg:flex-row gap-4 justify-between items-center">
-            
-            {/* Search Input */}
             <div className="relative w-full lg:w-96">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
               <input
@@ -152,7 +158,6 @@ const AdminInventory = () => {
               />
             </div>
             
-            {/* Filter Group */}
             <div className="flex flex-wrap items-center gap-3 w-full lg:w-auto">
               <div className="flex items-center gap-2 flex-1 md:flex-none">
                 <Filter size={18} className="text-gray-400" />
@@ -216,7 +221,7 @@ const AdminInventory = () => {
                         <p className="text-xs text-gray-400 uppercase">{item.category}</p>
                       </td>
                       <td className="px-6 py-4 text-sm text-gray-600">
-                        {item.warehouse || "Main Yard"}
+                        {item.warehouse || "Kalyani Doors"}
                       </td>
                       <td className="px-6 py-4 font-medium text-gray-900">
                         {item.stock} units
@@ -244,11 +249,11 @@ const AdminInventory = () => {
             </table>
           </div>
         </div>
-
+            
         {/* Edit Modal */}
         {isModalOpen && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[100] p-4">
-            <div className="bg-white rounded-2xl w-full max-w-md shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
+            <div className="bg-white rounded-2xl w-full max-w-md shadow-2xl overflow-hidden">
               <div className="p-6 border-b flex justify-between items-center bg-amber-50">
                 <h2 className="text-xl font-bold text-amber-900">Edit Inventory</h2>
                 <button onClick={() => setIsModalOpen(false)} className="text-gray-400 hover:text-gray-600">
@@ -273,9 +278,9 @@ const AdminInventory = () => {
                     onChange={(e) => setNewWarehouse(e.target.value)}
                     className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-amber-500 outline-none transition-all"
                   >
-                    <option value="Main Yard">Main Yard</option>
-                    <option value="Storage Shed A">Storage Shed A</option>
-                    <option value="North Processing Plant">North Processing Plant</option>
+                    <option value="KD">KD</option>
+                    <option value="KTM">KTM</option>
+                    <option value="BOTH">Both</option>
                   </select>
                 </div>
               </div>
