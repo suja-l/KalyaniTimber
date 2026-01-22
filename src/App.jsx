@@ -6,10 +6,11 @@ import Homepage from "./Pages/Homepage/homepage";
 import AdminPage from "./Pages/Adminpage/AdminPage.jsx";
 import AdminProduct from "./Pages/Adminpage/AdminProduct.jsx";
 import AdminOrders from "./Pages/Adminpage/AdminOrders.jsx";
+import AdminInventory from "./Pages/Adminpage/AdminInventory.jsx"; // <-- ADDED IMPORT
 import ProductListingPage from "./Pages/ProductsPage/ProductListingPage.jsx";
 import ProductDetailPage from "./Pages/ProductsPage/ProductDetailPage.jsx";
-import CartPage from "./Pages/CartPage/CartPage.jsx"; // <-- ADDED
-import FavoritesPage from "./Pages/FavoritesPage/FavoritesPage.jsx"; // <-- ADDED
+import CartPage from "./Pages/CartPage/CartPage.jsx"; 
+import FavoritesPage from "./Pages/FavoritesPage/FavoritesPage.jsx"; 
 
 import "./index.css";
 
@@ -22,13 +23,14 @@ function App() {
           <Route path="/" element={<Homepage />} />
           <Route path="/products" element={<ProductListingPage />} />
           <Route path="/products/:productId" element={<ProductDetailPage />} />
-          <Route path="/cart" element={<CartPage />} /> {/* <-- ADDED */}
-          <Route path="/favorites" element={<FavoritesPage />} /> {/* <-- ADDED */}
+          <Route path="/cart" element={<CartPage />} /> 
+          <Route path="/favorites" element={<FavoritesPage />} /> 
 
           {/* Admin Routes */}
           <Route path="/admin" element={<AdminPage />} />
           <Route path="/admin/products" element={<AdminProduct />} />
           <Route path="/admin/orders" element={<AdminOrders />} />
+          <Route path="/admin/inventory" element={<AdminInventory />} /> {/* <-- ADDED ROUTE */}
         </Routes>
       </div>
     </Router>

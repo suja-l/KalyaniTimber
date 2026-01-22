@@ -9,6 +9,7 @@ import {
   LogOut,
   Menu,
   X,
+  ClipboardList,
 } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 
@@ -103,6 +104,13 @@ const AdminSidebar = () => {
             title="Products"
             link="/admin/products"
             active={location.pathname.startsWith("/admin/products")}
+            onClick={closeSidebar}
+          />
+          <NavItem
+            icon={ClipboardList}
+            title="Inventory"
+            link="/admin/inventory"
+            active={location.pathname.startsWith("/admin/inventory")}
             onClick={closeSidebar}
           />
           <NavItem
