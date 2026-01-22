@@ -18,6 +18,7 @@ const AdminInventory = () => {
   const [filterStatus, setFilterStatus] = useState("All");
   const [loading, setLoading] = useState(true);
 
+  // Use the proxy path defined in your hooks
   const API_PRODUCTS_URL = "/products";
 
   useEffect(() => {
@@ -26,6 +27,7 @@ const AdminInventory = () => {
 
   const fetchInventory = async () => {
     try {
+      setLoading(true);
       const response = await fetch(API_PRODUCTS_URL);
       if (!response.ok) throw new Error("Failed to fetch inventory");
       const data = await response.json();
@@ -39,11 +41,14 @@ const AdminInventory = () => {
 
   // Logic to handle filtering
   const filteredInventory = inventory.filter(item => {
+    // Search filter: matches name or category
     const matchesSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          (item.category && item.category.toLowerCase().includes(searchTerm.toLowerCase()));
     
+    // Category filter
     const matchesCategory = filterCategory === "All" || item.category === filterCategory;
     
+    // Status filter: logic for In Stock, Low Stock, and Out of Stock
     const matchesStatus = filterStatus === "All" || 
       (filterStatus === "Low Stock" && item.stock <= 10 && item.stock > 0) ||
       (filterStatus === "Out of Stock" && item.stock === 0) ||
@@ -52,10 +57,18 @@ const AdminInventory = () => {
     return matchesSearch && matchesCategory && matchesStatus;
   });
 
-  // Get unique categories for the filter dropdown
+  // Dynamically generate unique categories from current inventory
   const categories = ["All", ...new Set(inventory.map(item => item.category).filter(Boolean))];
 
+  // Calculated stats for the header cards
   const lowStockCount = inventory.filter(item => item.stock <= 10 && item.stock > 0).length;
+  const outOfStockCount = inventory.filter(item => item.stock === 0).length;
+
+  const clearFilters = () => {
+    setFilterCategory("All");
+    setFilterStatus("All");
+    setSearchTerm("");
+  };
 
   return (
     <div className="flex min-h-screen lg:ml-64 bg-gray-50">
@@ -80,7 +93,7 @@ const AdminInventory = () => {
           </div>
         </div>
 
-        {/* Inventory Stats */}
+        {/* Inventory Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
             <p className="text-sm text-gray-500 font-medium">Total Items</p>
@@ -95,15 +108,14 @@ const AdminInventory = () => {
           </div>
           <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
             <p className="text-sm text-gray-500 font-medium">Out of Stock</p>
-            <p className="text-3xl font-bold text-gray-900 mt-1">
-              {inventory.filter(item => item.stock === 0).length}
-            </p>
+            <p className="text-3xl font-bold text-gray-900 mt-1">{outOfStockCount}</p>
           </div>
         </div>
 
         {/* Filter Toolbar */}
         <div className="bg-white p-4 rounded-t-xl border border-gray-200 shadow-sm space-y-4">
           <div className="flex flex-col md:flex-row gap-4 justify-between items-center">
+            {/* Search Input */}
             <div className="relative w-full md:w-96">
               <Search className="absolute left-3 top-1/2 -transform -translate-y-1/2 text-gray-400" size={18} />
               <input
@@ -115,6 +127,7 @@ const AdminInventory = () => {
               />
             </div>
             
+            {/* Filter Dropdowns */}
             <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
               <div className="flex items-center gap-2">
                 <Filter size={18} className="text-gray-400" />
@@ -140,9 +153,10 @@ const AdminInventory = () => {
                 <option value="Out of Stock">Out of Stock</option>
               </select>
 
+              {/* Clear Filters Button */}
               {(filterCategory !== "All" || filterStatus !== "All" || searchTerm !== "") && (
                 <button 
-                  onClick={() => {setFilterCategory("All"); setFilterStatus("All"); setSearchTerm("");}}
+                  onClick={clearFilters}
                   className="flex items-center gap-1 text-sm text-amber-700 hover:text-amber-900 font-medium"
                 >
                   <X size={14} /> Clear
