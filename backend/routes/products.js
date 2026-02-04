@@ -1,4 +1,3 @@
-// backend/routes/products.js
 const router = require("express").Router();
 const path = require("path");
 let Product = require(path.join(__dirname, "..", "models", "product.model"));
@@ -10,19 +9,9 @@ router.route("/").get((req, res) => {
     .catch((err) => res.status(400).json("Error: " + err));
 });
 
-// POST: Add a new product
+// POST: Add a new product (Fixes the "Cannot POST /products/add" error)
 router.route("/add").post((req, res) => {
-  const { 
-    name, 
-    category, 
-    brand, 
-    price, 
-    unit, 
-    description, 
-    imageUrl, 
-    tags, 
-    specs 
-  } = req.body;
+  const { name, category, brand, price, unit, description, imageUrl, tags, specs } = req.body;
 
   const newProduct = new Product({
     name,
@@ -32,7 +21,7 @@ router.route("/add").post((req, res) => {
     unit,
     description,
     imageUrl,
-    tags, // Frontend already sends this as an array
+    tags, 
     specs: {
       density: specs?.density || "",
       origin: specs?.origin || "",
@@ -46,19 +35,16 @@ router.route("/add").post((req, res) => {
     .catch((err) => res.status(400).json("Error: " + err));
 });
 
-// UPDATE: Stock and Warehouse specifically
+// UPDATE: Stock and Warehouse
 router.route("/inventory/:id").patch((req, res) => {
   const { stock, warehouse } = req.body;
-
   Product.findByIdAndUpdate(
     req.params.id,
     { $set: { stock: Number(stock), warehouse: warehouse } },
     { new: true, runValidators: true }
   )
     .then((updatedProduct) => {
-      if (!updatedProduct) {
-        return res.status(404).json("Error: Product not found");
-      }
+      if (!updatedProduct) return res.status(404).json("Error: Product not found");
       res.json(updatedProduct);
     })
     .catch((err) => res.status(400).json("Error: " + err));
