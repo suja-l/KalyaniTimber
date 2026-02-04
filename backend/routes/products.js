@@ -10,7 +10,43 @@ router.route("/").get((req, res) => {
     .catch((err) => res.status(400).json("Error: " + err));
 });
 
-// NEW: Update Stock and Warehouse specifically
+// POST: Add a new product
+router.route("/add").post((req, res) => {
+  const { 
+    name, 
+    category, 
+    brand, 
+    price, 
+    unit, 
+    description, 
+    imageUrl, 
+    tags, 
+    specs 
+  } = req.body;
+
+  const newProduct = new Product({
+    name,
+    category,
+    brand,
+    price: Number(price),
+    unit,
+    description,
+    imageUrl,
+    tags, // Frontend already sends this as an array
+    specs: {
+      density: specs?.density || "",
+      origin: specs?.origin || "",
+      grade: specs?.grade || ""
+    }
+  });
+
+  newProduct
+    .save()
+    .then((product) => res.json(product))
+    .catch((err) => res.status(400).json("Error: " + err));
+});
+
+// UPDATE: Stock and Warehouse specifically
 router.route("/inventory/:id").patch((req, res) => {
   const { stock, warehouse } = req.body;
 
