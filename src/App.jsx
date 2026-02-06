@@ -12,6 +12,8 @@ import ProductDetailPage from "./Pages/ProductsPage/ProductDetailPage.jsx";
 import CartPage from "./Pages/CartPage/CartPage.jsx"; 
 import FavoritesPage from "./Pages/FavoritesPage/FavoritesPage.jsx"; 
 import LoginPage from "./Pages/LoginPage/LoginPage.jsx";
+import RegisterPage from "./Pages/LoginPage/RegisterPage.jsx";  
+import ForgotPassword from "./Pages/LoginPage/ForgotPassword.jsx";
 import "./index.css";
 
 function App() {
@@ -20,6 +22,7 @@ function App() {
       <div className="">
         <Navbar />
         <Routes>
+          <Route path="/register" element={<RegisterPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/" element={<Homepage />} />
           <Route path="/products" element={<ProductListingPage />} />
