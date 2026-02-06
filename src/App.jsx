@@ -1,5 +1,3 @@
-// src/App.jsx
-
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Navbar from "./Components/Navbar";
 import Homepage from "./Pages/Homepage/homepage";
@@ -13,7 +11,7 @@ import CartPage from "./Pages/CartPage/CartPage.jsx";
 import FavoritesPage from "./Pages/FavoritesPage/FavoritesPage.jsx"; 
 import LoginPage from "./Pages/LoginPage/LoginPage.jsx";
 import RegisterPage from "./Pages/LoginPage/RegisterPage.jsx";  
-import ForgotPassword from "./Pages/LoginPage/ForgotPassword.jsx"; //
+import ForgotPassword from "./Pages/LoginPage/ForgotPassword.jsx"; 
 import ResetPassword from "./Pages/LoginPage/ResetPassword.jsx";
 import "./index.css";
 
@@ -23,12 +21,12 @@ function App() {
       <div className="">
         <Navbar />
         <Routes>
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/reset-password/:token" element={<ResetPassword />} />     
+          <Route path="/" element={<Homepage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/login" element={<LoginPage />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} /> {/* ADDED ROUTE */}
-          <Route path="/" element={<Homepage />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password/:token" element={<ResetPassword />} />     
+          
           <Route path="/products" element={<ProductListingPage />} />
           <Route path="/products/:productId" element={<ProductDetailPage />} />
           <Route path="/cart" element={<CartPage />} /> 

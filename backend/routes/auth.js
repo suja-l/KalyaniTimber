@@ -4,6 +4,15 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/user.model");
 const nodemailer = require("nodemailer");
 
+// Configure Nodemailer transporter
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
+});
+
 // Register a new user
 router.post("/register", async (req, res) => {
   try {
@@ -41,65 +50,11 @@ router.post("/login", async (req, res) => {
   }
 });
 
-// Forgot Password / Reset Password
-router.post("/reset-password", async (req, res) => {
-  try {
-    const { email, newPassword } = req.body;
-    
-    // Find user by email
-    const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(404).json("User with this email does not exist.");
-    }
-
-    // Hash the new password
-    const hashedPassword = await bcrypt.hash(newPassword, 10);
-    
-    // Update user password
-    user.password = hashedPassword;
-    await user.save();
-
-    res.json({ message: "Password reset successful!" });
-  } catch (err) {
-    res.status(500).json("Error: " + err.message);
-  }
-});
-        // Reset Password Route
-router.post("/reset-password", async (req, res) => {
-  try {
-    const { email, newPassword } = req.body;
-    
-    // Find user by email
-    const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(404).json("User not found with this email.");
-    }
-
-    // Hash the new password before saving
-    const hashedPassword = await bcrypt.hash(newPassword, 10);
-    user.password = hashedPassword;
-    await user.save();
-
-    res.json({ message: "Password updated successfully" });
-  } catch (err) {
-    res.status(500).json("Error: " + err.message);
-  }
-});
-
- // Configure Nodemailer transporter
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-});
-
-// ROUTE 1: Request Password Reset
+// ROUTE 1: Request Password Reset (Sends Email)
 router.post("/forgot-password-request", async (req, res) => {
   try {
     const { email } = req.body;
-    const user = await User.findOne({ email }); //
+    const user = await User.findOne({ email });
     if (!user) return res.status(404).json("User not found");
 
     // Create a temporary token valid for 15 minutes
@@ -119,7 +74,7 @@ router.post("/forgot-password-request", async (req, res) => {
         <div style="font-family: sans-serif; padding: 20px;">
           <h2>Password Reset</h2>
           <p>You requested a password reset. Click the button below to set a new password. This link expires in 15 minutes.</p>
-          <a href="${resetUrl}" style="background: #92400e; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Reset Password</a>
+          <a href="${resetUrl}" style="background: #92400e; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">Reset Password</a>
           <p style="margin-top: 20px; font-size: 12px; color: #666;">If you didn't request this, please ignore this email.</p>
         </div>
       `,
