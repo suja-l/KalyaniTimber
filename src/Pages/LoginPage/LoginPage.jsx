@@ -1,11 +1,11 @@
-// src/Pages/LoginPage/LoginPage.jsx
-
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { Eye, EyeOff } from "lucide-react"; //
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false); // State for eye toggle
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -37,6 +37,7 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-[#0f0f0f]">
+      {/* Background Glow */}
       <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-amber-900/10 rounded-full blur-[120px]"></div>
       
       <div className="relative w-full max-w-md mx-4 z-10">
@@ -61,7 +62,6 @@ export default function LoginPage() {
             <div className="space-y-1">
               <div className="flex justify-between items-center ml-1">
                 <label className="block text-xs font-semibold text-stone-400 uppercase tracking-widest">Password</label>
-                {/* FORGOT PASSWORD LINK */}
                 <Link 
                   to="/forgot-password" 
                   className="text-xs font-semibold text-amber-700 hover:text-amber-500 transition-colors"
@@ -69,13 +69,24 @@ export default function LoginPage() {
                   Forgot Password?
                 </Link>
               </div>
-              <input
-                type="password"
-                required
-                className="w-full px-5 py-3 bg-white/5 border border-white/10 rounded-2xl text-white outline-none focus:ring-2 focus:ring-amber-800 transition-all"
-                placeholder="••••••••"
-                onChange={(e) => setPassword(e.target.value)}
-              />
+              
+              {/* Password Input with Eye Toggle */}
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"} //
+                  required
+                  className="w-full px-5 py-3 bg-white/5 border border-white/10 rounded-2xl text-white outline-none focus:ring-2 focus:ring-amber-800 transition-all"
+                  placeholder="••••••••"
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+                <button
+                  type="button"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-stone-400 hover:text-white transition-colors"
+                  onClick={() => setShowPassword(!showPassword)} //
+                >
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />} 
+                </button>
+              </div>
             </div>
 
             <button
