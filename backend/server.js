@@ -5,9 +5,10 @@ require("dotenv").config();
 
 const productRouter = require("./routes/products");
 const orderRouter = require("./routes/orders");
+const authRouter = require("./routes/auth"); // ADDED
 
 const app = express();
-const port = process.env.PORT || 5000; // Vite looks for 5000
+const port = process.env.PORT || 5000;
 
 app.use(cors());
 app.use(express.json());
@@ -19,6 +20,7 @@ mongoose.connect(uri)
 
 app.use("/products", productRouter);
 app.use("/orders", orderRouter);
+app.use("/auth", authRouter); // ADDED
 
 app.listen(port, () => {
   console.log(`🚀 Server is running on port: ${port}`);

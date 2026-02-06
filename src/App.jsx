@@ -11,7 +11,7 @@ import ProductListingPage from "./Pages/ProductsPage/ProductListingPage.jsx";
 import ProductDetailPage from "./Pages/ProductsPage/ProductDetailPage.jsx";
 import CartPage from "./Pages/CartPage/CartPage.jsx"; 
 import FavoritesPage from "./Pages/FavoritesPage/FavoritesPage.jsx"; 
-
+import LoginPage from "./Pages/LoginPage/LoginPage.jsx";
 import "./index.css";
 
 function App() {
@@ -20,6 +20,7 @@ function App() {
       <div className="">
         <Navbar />
         <Routes>
+          <Route path="/login" element={<LoginPage />} />
           <Route path="/" element={<Homepage />} />
           <Route path="/products" element={<ProductListingPage />} />
           <Route path="/products/:productId" element={<ProductDetailPage />} />
