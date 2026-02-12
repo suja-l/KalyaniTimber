@@ -1,3 +1,5 @@
+// src/context/StoreContext.jsx
+
 import React, { createContext, useState, useEffect } from "react";
 
 export const StoreContext = createContext(null);
@@ -5,9 +7,8 @@ export const StoreContext = createContext(null);
 export const StoreProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState([]);
   const [favorites, setFavorites] = useState([]);
-  const [user, setUser] = useState(null); // Track logged-in user
+  const [user, setUser] = useState(null); 
 
-  // Persistence: Check for user in localStorage on load
   useEffect(() => {
     const storedUser = localStorage.getItem("ktm_user");
     if (storedUser) setUser(JSON.parse(storedUser));

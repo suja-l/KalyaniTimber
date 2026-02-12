@@ -1,6 +1,9 @@
-import React, { useState } from "react";
+// src/Pages/LoginPage/LoginPage.jsx
+
+import React, { useState, useContext } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
+import { StoreContext } from "../../context/StoreContext";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -8,6 +11,9 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  
+  // Access setUser from context to update state immediately
+  const { setUser } = useContext(StoreContext);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -21,9 +27,12 @@ export default function LoginPage() {
       const data = await response.json();
 
       if (response.ok) {
-        // Save auth data
+        // Save auth data using the key "ktm_user" to match StoreContext
         localStorage.setItem("token", data.token);
-        localStorage.setItem("user", JSON.stringify(data.user));
+        localStorage.setItem("ktm_user", JSON.stringify(data.user));
+        
+        // Update global state so Navbar reacts immediately
+        setUser(data.user);
         
         alert("Login successful!");
 
