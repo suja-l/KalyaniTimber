@@ -1,16 +1,14 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
-import { StoreContext } from "../../context/StoreContext";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  
   const navigate = useNavigate();
-  const { setUser } = useContext(StoreContext);
+
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -23,16 +21,13 @@ export default function LoginPage() {
       const data = await response.json();
 
       if (response.ok) {
-        // Save token and user data to localStorage using the keys expected by StoreContext
+        // Save auth data
         localStorage.setItem("token", data.token);
-        localStorage.setItem("ktm_user", JSON.stringify(data.user));
+        localStorage.setItem("user", JSON.stringify(data.user));
         
-        // Update the global state in StoreContext
-        setUser(data.user);
-
         alert("Login successful!");
 
-        // Redirect based on the role returned from the backend
+        // Role-based redirection logic
         if (data.user.role === "admin") {
           navigate("/admin");
         } else {
