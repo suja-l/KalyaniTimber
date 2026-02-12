@@ -1,14 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { Eye, EyeOff } from "lucide-react"; //
+import { Eye, EyeOff } from "lucide-react";
+import { StoreContext } from "../../context/StoreContext";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false); // State for eye toggle
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  
   const navigate = useNavigate();
-
+  const { setUser } = useContext(StoreContext);
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -21,10 +23,21 @@ export default function LoginPage() {
       const data = await response.json();
 
       if (response.ok) {
+        // Save token and user data to localStorage using the keys expected by StoreContext
         localStorage.setItem("token", data.token);
-        localStorage.setItem("user", JSON.stringify(data.user));
+        localStorage.setItem("ktm_user", JSON.stringify(data.user));
+        
+        // Update the global state in StoreContext
+        setUser(data.user);
+
         alert("Login successful!");
-        navigate(data.user.role === "admin" ? "/admin" : "/");
+
+        // Redirect based on the role returned from the backend
+        if (data.user.role === "admin") {
+          navigate("/admin");
+        } else {
+          navigate("/");
+        }
       } else {
         alert(data);
       }
@@ -70,10 +83,9 @@ export default function LoginPage() {
                 </Link>
               </div>
               
-              {/* Password Input with Eye Toggle */}
               <div className="relative">
                 <input
-                  type={showPassword ? "text" : "password"} //
+                  type={showPassword ? "text" : "password"}
                   required
                   className="w-full px-5 py-3 bg-white/5 border border-white/10 rounded-2xl text-white outline-none focus:ring-2 focus:ring-amber-800 transition-all"
                   placeholder="••••••••"
@@ -82,7 +94,7 @@ export default function LoginPage() {
                 <button
                   type="button"
                   className="absolute right-4 top-1/2 -translate-y-1/2 text-stone-400 hover:text-white transition-colors"
-                  onClick={() => setShowPassword(!showPassword)} //
+                  onClick={() => setShowPassword(!showPassword)}
                 >
                   {showPassword ? <EyeOff size={20} /> : <Eye size={20} />} 
                 </button>
